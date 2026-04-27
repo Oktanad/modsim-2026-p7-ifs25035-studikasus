@@ -1,0 +1,69 @@
+
+## Global Variables
+@baseurl=http://127.0.0.1:5000
+
+## Generate Questions
+# @name PostGenerateQuestions
+POST {{baseurl}}/questions/generate
+Content-Type: application/json
+
+{
+  "subject": "Matematika",
+  "topic": "Persamaan Kuadrat",
+  "difficulty": "sedang",
+  "total": 5
+}
+###
+
+## Response PostGenerateQuestions
+{
+  "set_id": 1,
+  "subject": "Matematika",
+  "topic": "Persamaan Kuadrat",
+  "difficulty": "sedang",
+  "total": 5,
+  "data": [
+    {
+      "question_text": "Akar-akar persamaan x² - 5x + 6 = 0 adalah...",
+      "options": ["A. x=1 dan x=6", "B. x=2 dan x=3", "C. x=-2 dan x=-3", "D. x=1 dan x=-6"],
+      "answer": "B"
+    },
+    {
+      "question_text": "Nilai diskriminan dari 2x² - 4x + 2 = 0 adalah...",
+      "options": ["A. 0", "B. 8", "C. -8", "D. 16"],
+      "answer": "A"
+    }
+  ]
+}
+###
+
+## Get All Questions
+# @name GetAllQuestions
+GET {{baseurl}}/questions?page=1&per_page=10
+Content-Type: application/json
+###
+
+## Response GetAllQuestions
+{
+  "page": 1,
+  "per_page": 10,
+  "total": 5,
+  "total_pages": 1,
+  "data": [
+    {
+      "id": 5,
+      "question_text": "Akar-akar persamaan x² - 5x + 6 = 0 adalah...",
+      "options": ["A. x=1 dan x=6", "B. x=2 dan x=3", "C. x=-2 dan x=-3", "D. x=1 dan x=-6"],
+      "answer": "B",
+      "set_id": 1,
+      "created_at": "2026-04-27T06:00:00"
+    }
+  ]
+}
+###
+
+## Get Questions Filtered by Subject
+# @name GetQuestionsBySubject
+GET {{baseurl}}/questions?subject=Matematika&page=1&per_page=10
+Content-Type: application/json
+###

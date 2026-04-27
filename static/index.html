@@ -1,0 +1,503 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Generator Soal Latihan — Delcom</title>
+    <style>
+        /* === RESET & VARIABEL === */
+        *,
+        *::before,
+        *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        :root {
+            --bg: #0f1117;
+            --surface: #1a1d27;
+            --card: #22263a;
+            --primary: #6c63ff;
+            --primary-hover: #5a52e0;
+            --accent: #00d4aa;
+            --text: #e2e8f0;
+            --muted: #8892a4;
+            --border: #2e3347;
+            --radius: 12px;
+            --shadow: 0 4px 24px rgba(0, 0, 0, 0.4);
+        }
+
+        /* === BASE === */
+        body {
+            font-family: 'Segoe UI', system-ui, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 2rem 1rem;
+        }
+
+        /* === HEADER === */
+        header {
+            text-align: center;
+            margin-bottom: 2.5rem;
+        }
+
+        header h1 {
+            font-size: 2rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        header p {
+            color: var(--muted);
+            margin-top: 0.5rem;
+            font-size: 0.95rem;
+        }
+
+        /* === CARD === */
+        .card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 1.75rem;
+            width: 100%;
+            max-width: 700px;
+            box-shadow: var(--shadow);
+            margin-bottom: 1.5rem;
+        }
+
+        .card h2 {
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--muted);
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            margin-bottom: 1.25rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        /* === FORM === */
+        .form-group {
+            margin-bottom: 1rem;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+
+        label {
+            display: block;
+            font-size: 0.875rem;
+            color: var(--muted);
+            margin-bottom: 0.4rem;
+        }
+
+        input,
+        select {
+            width: 100%;
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 0.65rem 0.9rem;
+            color: var(--text);
+            font-size: 0.95rem;
+            transition: border-color 0.2s;
+            outline: none;
+        }
+
+        input:focus,
+        select:focus {
+            border-color: var(--primary);
+        }
+
+        select option {
+            background: var(--card);
+        }
+
+        /* === BUTTON === */
+        button {
+            width: 100%;
+            background: var(--primary);
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            padding: 0.75rem;
+            font-size: 0.95rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s, transform 0.1s;
+            margin-top: 0.5rem;
+        }
+
+        button:hover {
+            background: var(--primary-hover);
+        }
+
+        button:active {
+            transform: scale(0.98);
+        }
+
+        button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        /* === QUESTION CARD === */
+        .question-item {
+            background: var(--card);
+            border-left: 3px solid var(--primary);
+            border-radius: 8px;
+            padding: 1rem 1.1rem;
+            margin-bottom: 0.85rem;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .question-item:nth-child(odd) {
+            border-left-color: var(--accent);
+        }
+
+        .question-item .q-text {
+            font-size: 0.95rem;
+            font-weight: 600;
+            line-height: 1.5;
+            margin-bottom: 0.6rem;
+        }
+
+        .question-item .q-options {
+            list-style: none;
+            margin-bottom: 0.5rem;
+        }
+
+        .question-item .q-options li {
+            font-size: 0.875rem;
+            color: var(--muted);
+            padding: 0.2rem 0;
+        }
+
+        .question-item .q-options li.correct {
+            color: var(--accent);
+            font-weight: 600;
+        }
+
+        .question-item .q-answer {
+            font-size: 0.8rem;
+            color: var(--accent);
+            margin-top: 0.3rem;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(8px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* === HISTORY TABLE === */
+        .history-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.875rem;
+        }
+
+        .history-table th {
+            text-align: left;
+            padding: 0.5rem 0.75rem;
+            color: var(--muted);
+            border-bottom: 1px solid var(--border);
+            font-weight: 500;
+        }
+
+        .history-table td {
+            padding: 0.6rem 0.75rem;
+            border-bottom: 1px solid var(--border);
+            color: var(--text);
+            vertical-align: top;
+        }
+
+        .history-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        /* === STATUS === */
+        #status {
+            font-size: 0.85rem;
+            margin-top: 0.6rem;
+            min-height: 1.2rem;
+            text-align: center;
+        }
+
+        .status-loading {
+            color: var(--accent);
+        }
+
+        .status-error {
+            color: #f87171;
+        }
+
+        .status-success {
+            color: var(--accent);
+        }
+
+        /* === BADGE === */
+        .badge {
+            display: inline-block;
+            background: var(--primary);
+            color: #fff;
+            font-size: 0.7rem;
+            padding: 0.15rem 0.5rem;
+            border-radius: 999px;
+            font-weight: 600;
+        }
+
+        .badge-difficulty {
+            font-size: 0.7rem;
+            padding: 0.15rem 0.5rem;
+            border-radius: 999px;
+            font-weight: 600;
+            display: inline-block;
+        }
+
+        .badge-mudah { background: #22c55e33; color: #4ade80; }
+        .badge-sedang { background: #f59e0b33; color: #fbbf24; }
+        .badge-sulit { background: #ef444433; color: #f87171; }
+
+        /* === FILTER === */
+        .filter-row {
+            display: flex;
+            gap: 0.75rem;
+            margin-bottom: 1rem;
+            align-items: flex-end;
+        }
+
+        .filter-row input {
+            flex: 1;
+        }
+
+        .filter-row button {
+            width: auto;
+            padding: 0.65rem 1rem;
+            margin-top: 0;
+            font-size: 0.85rem;
+        }
+
+        /* === EMPTY STATE === */
+        .empty-state {
+            text-align: center;
+            color: var(--muted);
+            padding: 2rem 0;
+            font-size: 0.9rem;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- ===== HEADER ===== -->
+    <header>
+        <h1>📝 Generator Soal Latihan</h1>
+        <p>Powered by Delcom</p>
+    </header>
+
+    <!-- ===== FORM GENERATE ===== -->
+    <div class="card">
+        <h2>Generate Soal Baru</h2>
+        <div class="form-group">
+            <label for="subject">Mata Pelajaran</label>
+            <input type="text" id="subject" placeholder="contoh: Matematika, Fisika, Bahasa Indonesia..." />
+        </div>
+        <div class="form-group">
+            <label for="topic">Topik</label>
+            <input type="text" id="topic" placeholder="contoh: Persamaan Kuadrat, Hukum Newton..." />
+        </div>
+        <div class="form-row">
+            <div class="form-group">
+                <label for="difficulty">Tingkat Kesulitan</label>
+                <select id="difficulty">
+                    <option value="mudah">Mudah</option>
+                    <option value="sedang" selected>Sedang</option>
+                    <option value="sulit">Sulit</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="total">Jumlah Soal (1–10)</label>
+                <input type="number" id="total" min="1" max="10" value="5" />
+            </div>
+        </div>
+        <button id="btn-generate" onclick="handleGenerate()">🚀 Generate Soal</button>
+        <div id="status"></div>
+    </div>
+
+    <!-- ===== HASIL GENERATE ===== -->
+    <div class="card" id="result-card" style="display:none;">
+        <h2>Hasil Generate <span class="badge" id="result-count">0</span></h2>
+        <div id="result-list"></div>
+    </div>
+
+    <!-- ===== RIWAYAT SOAL ===== -->
+    <div class="card">
+        <h2>
+            <span>Riwayat Soal Tersimpan</span>
+            <button onclick="loadHistory()" style="width:auto; padding:0.35rem 0.75rem; font-size:0.8rem; margin:0;">
+                ↻ Refresh
+            </button>
+        </h2>
+        <div class="filter-row">
+            <input type="text" id="filter-subject" placeholder="Filter mata pelajaran..." />
+            <button onclick="loadHistory()">🔍 Filter</button>
+        </div>
+        <div id="history-container">
+            <div class="empty-state">Klik Refresh untuk memuat riwayat.</div>
+        </div>
+    </div>
+
+    <!-- ===== SCRIPT ===== -->
+    <script>
+        const BASE_URL = "";
+
+        function setStatus(msg, type = "") {
+            const el = document.getElementById("status");
+            el.textContent = msg;
+            el.className = type ? `status-${type}` : "";
+        }
+
+        // --- Generate ---
+        async function handleGenerate() {
+            const subject = document.getElementById("subject").value.trim();
+            const topic = document.getElementById("topic").value.trim();
+            const difficulty = document.getElementById("difficulty").value;
+            const total = parseInt(document.getElementById("total").value);
+            const btn = document.getElementById("btn-generate");
+
+            if (!subject) return setStatus("⚠️ Mata pelajaran tidak boleh kosong.", "error");
+            if (!topic) return setStatus("⚠️ Topik tidak boleh kosong.", "error");
+            if (!total || total < 1 || total > 10) return setStatus("⚠️ Jumlah soal harus antara 1–10.", "error");
+
+            btn.disabled = true;
+            setStatus("⏳ Sedang generate soal...", "loading");
+            document.getElementById("result-card").style.display = "none";
+
+            try {
+                const res = await fetch(`${BASE_URL}/questions/generate`, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ subject, topic, difficulty, total })
+                });
+
+                if (!res.ok) {
+                    const err = await res.json();
+                    throw new Error(err.error || "Request gagal");
+                }
+
+                const data = await res.json();
+                renderResults(data);
+                setStatus(`✅ Berhasil generate ${data.total} soal!`, "success");
+                loadHistory();
+
+            } catch (err) {
+                setStatus(`❌ Error: ${err.message}`, "error");
+            } finally {
+                btn.disabled = false;
+            }
+        }
+
+        function renderResults(data) {
+            const list = document.getElementById("result-list");
+            const card = document.getElementById("result-card");
+            const countBadge = document.getElementById("result-count");
+
+            list.innerHTML = "";
+            countBadge.textContent = data.total;
+
+            data.data.forEach((q, idx) => {
+                const div = document.createElement("div");
+                div.className = "question-item";
+
+                const optionsHtml = (q.options || []).map(opt => {
+                    const letter = opt.charAt(0);
+                    const isCorrect = letter === q.answer;
+                    return `<li class="${isCorrect ? 'correct' : ''}">${opt}${isCorrect ? ' ✓' : ''}</li>`;
+                }).join("");
+
+                div.innerHTML = `
+                    <div class="q-text">${idx + 1}. ${q.question_text}</div>
+                    <ul class="q-options">${optionsHtml}</ul>
+                    <div class="q-answer">Jawaban: ${q.answer}</div>
+                `;
+                list.appendChild(div);
+            });
+
+            card.style.display = "block";
+        }
+
+        // --- History ---
+        async function loadHistory() {
+            const container = document.getElementById("history-container");
+            const subjectFilter = document.getElementById("filter-subject").value.trim();
+            container.innerHTML = `<div class="empty-state">Memuat...</div>`;
+
+            try {
+                const url = subjectFilter
+                    ? `${BASE_URL}/questions?subject=${encodeURIComponent(subjectFilter)}&page=1&per_page=20`
+                    : `${BASE_URL}/questions?page=1&per_page=20`;
+
+                const res = await fetch(url);
+                const data = await res.json();
+
+                if (!data.data || data.data.length === 0) {
+                    container.innerHTML = `<div class="empty-state">Belum ada soal tersimpan.</div>`;
+                    return;
+                }
+
+                const table = document.createElement("table");
+                table.className = "history-table";
+                table.innerHTML = `
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Soal</th>
+                            <th>Jawaban</th>
+                            <th>Dibuat</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${data.data.map(q => `
+                            <tr>
+                                <td>${q.id}</td>
+                                <td>${q.question_text}</td>
+                                <td style="color:var(--accent); font-weight:600;">${q.answer}</td>
+                                <td>${new Date(q.created_at).toLocaleDateString("id-ID", {
+                                    day: "2-digit", month: "short", year: "numeric"
+                                })}</td>
+                            </tr>
+                        `).join("")}
+                    </tbody>
+                `;
+                container.innerHTML = "";
+                container.appendChild(table);
+
+            } catch (err) {
+                container.innerHTML = `<div class="empty-state" style="color:#f87171;">Gagal memuat data: ${err.message}</div>`;
+            }
+        }
+    </script>
+
+</body>
+
+</html>
